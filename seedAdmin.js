@@ -49,11 +49,10 @@ const seedAdmin = async () => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Create the admin account
-    await Admin.create({
+    const admin=await Admin.create({
       username: username.trim(),
       email: email.trim().toLowerCase(),
       password: hashedPassword,
-      role: "admin",
     });
 
     console.log("Admin created successfully");

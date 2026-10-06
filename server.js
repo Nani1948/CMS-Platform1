@@ -12,7 +12,7 @@ import testimonialRoutes from "./routes/testimonialRoutes.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
-
+import contactRoutes from "./routes/contactRoute.js";
 //Load environment variables
 dotenv.config();
 
@@ -55,6 +55,8 @@ app.use("/api/services", serviceRoutes);
 
 // Upload routes
 app.use("/api/upload", uploadRoutes);
+// Contact routes
+app.use("/api/contact", contactRoute);
 
 // Global error middleware
 app.use(errorMiddleware);

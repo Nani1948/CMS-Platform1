@@ -8,7 +8,7 @@ const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     // Check for Bearer token
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "Authentication token required",
@@ -18,7 +18,14 @@ const authMiddleware = async (req, res, next) => {
     // Extract token from:
     // Bearer TOKEN
     const token = authHeader.split(" ")[1];
-
+    
+    //Verify token
+     if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication token required",
+      });
+    }
     // Verify JWT
     const decoded = jwt.verify(
       token,
@@ -47,7 +54,8 @@ const authMiddleware = async (req, res, next) => {
     // Continue to requested route
     next();
   }
-     catch {
+     catch(error){
+      console.error("Auth middleware error:", error.message);
     
     // Token invalid or expired
     return res.status(401).json({

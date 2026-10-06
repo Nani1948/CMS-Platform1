@@ -3,84 +3,83 @@ import About from "../models/About.js";
 // CREATE - Create a new About record
 export const createAbout = async (req, res) => {
   try {
-    // Create About document using request body
+    // Check whether an About record already exists
+    const existingAbout = await About.findOne();
+
+    // Prevent creating multiple About records
+    if (existingAbout) {
+      return res.status(400).json({
+        success: false,
+        message: "About information already exists",
+      });
+    }
+
+    // Create About document
     const about = await About.create(req.body);
 
-    // Send created About data
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "About created successfully",
       data: about,
     });
   } catch (error) {
-    // Handle validation/database errors
     console.error("Create About error:", error.message);
 
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 };
 
-// READ - Get all About records
+
+// READ - Get About information
 export const getAbouts = async (req, res) => {
   try {
-    // Find all About records
-    const abouts = await About.find().sort({ createdAt: -1 });
+    // Find the single About record
+    const about = await About.findOne();
 
-    // Send About records
-    res.status(200).json({
+    // Check whether About exists
+    if (!about) {
+      return res.status(404).json({
+        success: false,
+        message: "About information not found",
+      });
+    }
+
+    // Send About information
+    return res.status(200).json({
       success: true,
-      data: abouts,
+      data: about,
     });
   } catch (error) {
-    // Handle database errors
-    console.error("Get Abouts error:", error.message);
+    console.error("Get About error:", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to get About information",
     });
   }
 };
 
-// READ - Get one About record by ID
-export const getAboutById = async (req, res) => {
-  try {
-    // Find About using ID from URL
-    const about = await About.findById(req.params.id);
 
-    // Check if About exists
-    if (!about) {
+// UPDATE - Update About information
+export const updateAbout = async (req, res) => {
+  try {
+    // Find the existing About record
+    const existingAbout = await About.findOne();
+
+    // Check whether About exists
+    if (!existingAbout) {
       return res.status(404).json({
         success: false,
-        message: "About not found",
+        message: "About information not found",
       });
     }
 
-    // Send About data
-    res.status(200).json({
-      success: true,
-      data: about,
-    });
-  } catch (error) {
-    // Handle invalid ID/database errors
-    console.error("Get About error:", error.message);
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to get About",
-    });
-  }
-};
-
-// UPDATE - Update an About record
-export const updateAbout = async (req, res) => {
-  try {
-    // Find About by ID and update it
+    // Update the existing About record
     const about = await About.findByIdAndUpdate(
-      req.params.id,
+      existingAbout._id,
       req.body,
       {
         new: true,
@@ -88,55 +87,44 @@ export const updateAbout = async (req, res) => {
       }
     );
 
-    // Check if About exists
-    if (!about) {
-      return res.status(404).json({
-        success: false,
-        message: "About not found",
-      });
-    }
-
-    // Send updated About
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "About updated successfully",
       data: about,
     });
   } catch (error) {
-    // Handle validation errors
     console.error("Update About error:", error.message);
 
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 };
 
-// DELETE - Delete an About record
+
+// DELETE - Delete About information
 export const deleteAbout = async (req, res) => {
   try {
-    // Find About by ID and delete it
-    const about = await About.findByIdAndDelete(req.params.id);
+    // ⭐ Find and delete the single About record
+    const about = await About.findOneAndDelete();
 
-    // Check if About exists
+    // Check whether About exists
     if (!about) {
       return res.status(404).json({
         success: false,
-        message: "About not found",
+        message: "About information not found",
       });
     }
 
-    // Confirm deletion
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "About deleted successfully",
     });
   } catch (error) {
-    // Handle database errors
     console.error("Delete About error:", error.message);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to delete About",
     });

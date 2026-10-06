@@ -17,9 +17,10 @@ const skillSchema = new mongoose.Schema(
     },
     //Skill Level field with default value
     level: {
-      type: String,
-      default: "",
-      trim: true,
+      type: Number,
+      default: 0,
+      min:0,
+      max:100,
     },
   },
   //Automatically add createdAt and updatedAt timestamps to the schema

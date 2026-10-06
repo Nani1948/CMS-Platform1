@@ -7,33 +7,33 @@ import jwt from "jsonwebtoken";
 export const loginAdmin = async (req, res) => {
     try {
 
-        // Get email and password from request body
-        const { email, password } = req.body;
-        // Validate that email and password are provided and are of type string
+        // Get username and password from request body
+        const { username, password } = req.body;
+        // Validate that username and password are provided and are of type string
 
         if (
-            typeof email !== "string" ||
+            typeof username !== "string" ||
             typeof password !== "string" ||
-            !email.trim() ||
+            !username.trim() ||
             !password
         ) {
             // Return a 400 Bad Request response.
             return res.status(400).json({
                 success: false,
-                message: "Email and password are required",
+                message: "Username and password are required",
             });
         }
 
-        // Find the admin by email and include the password field for comparison
+        // Find the admin by username and include the password field for comparison
         const admin = await Admin.findOne({
-            email: email.trim().toLowerCase(),
+            username: username.trim().toLowerCase(),
         }).select("+password");
 
         // If admin is not found, return a 401 Unauthorized response
         if (!admin) {
             return res.status(401).json({
                 success: false,
-                message: "Invalid email or password",
+                message: "Invalid username or password",
             });
         }
 
@@ -47,7 +47,7 @@ export const loginAdmin = async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
-                message: "Invalid email or password",
+                message: "Invalid username or password",
             });
         }
 
