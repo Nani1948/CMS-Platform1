@@ -3,6 +3,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import aboutRoutes from "./routes/aboutRoutes.js";
+import skillRoutes from "./routes/skillRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import experienceRoutes from "./routes/experienceRoutes.js";
+import testimonialRoutes from "./routes/testimonialRoutes.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import errorMiddleware from "./middleware/errorMiddleware.js";
 
 //Load environment variables
 dotenv.config();
@@ -10,16 +19,45 @@ dotenv.config();
 
 //Create a Express
 const app = express();
-
+    
 //Enable CORS -Logging and Security
 app.use(cors());
 
 //Parse JSON request body
 app.use(express.json());
 
+// Serve uploaded images
+app.use("/uploads", express.static("uploads"));
+
 // Authentication routes
 app.use("/api/auth", authRoutes);
 
+// About routes
+app.use("/api/about", aboutRoutes);
+
+// Skill routes
+app.use("/api/skills", skillRoutes);
+
+// Project routes
+app.use("/api/projects", projectRoutes);
+
+// Blog routes
+app.use("/api/blogs", blogRoutes);
+
+// Experience routes
+app.use("/api/experience", experienceRoutes);
+
+// Testimonial routes
+app.use("/api/testimonials", testimonialRoutes);
+
+// Service routes
+app.use("/api/services", serviceRoutes);
+
+// Upload routes
+app.use("/api/upload", uploadRoutes);
+
+// Global error middleware
+app.use(errorMiddleware);
 //Test route
 app.get("/", (req, res) => {
     res.status(200).json({
